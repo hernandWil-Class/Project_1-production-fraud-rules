@@ -1,0 +1,73 @@
+policy_version: "bnpl-fraud-rules-v1"
+
+decision_thresholds:
+  review_threshold: 40
+  reject_threshold: 80
+
+rules:
+  high_order_amount:
+    enabled: true
+    weight: 25
+    params:
+      amount_threshold: 500
+
+  high_merchant_risk_score:
+    enabled: true
+    weight: 20
+    params:
+      risk_threshold: 0.75
+
+  new_customer_high_amount:
+    enabled: true
+    weight: 30
+    params:
+      max_tenure_days: 30
+      amount_threshold: 300
+
+  multiple_previous_failed_payments:
+    enabled: true
+    weight: 25
+    params:
+      failed_payments_threshold: 2
+
+  high_device_risk_score:
+    enabled: true
+    weight: 25
+    params:
+      risk_threshold: 0.80
+
+  risky_email_domain:
+    enabled: true
+    weight: 15
+    params:
+      risk_threshold: 0.70
+
+  large_billing_shipping_distance:
+    enabled: true
+    weight: 15
+    params:
+      distance_threshold_km: 250
+
+  suspicious_transaction_time:
+    enabled: true
+    weight: 10
+    params:
+      start_hour: 0
+      end_hour: 5
+
+  high_risk_merchant_category:
+    enabled: true
+    weight: 15
+    params:
+      categories:
+        - electronics
+        - luxury
+        - gift_cards
+
+  high_device_new_customer_high_amount:
+    enabled: true
+    weight: 35
+    params:
+      device_risk_threshold: 0.75
+      max_tenure_days: 14
+      amount_threshold: 400
