@@ -2,6 +2,8 @@
 
 A production-style learning project for building a configurable fraud rules engine in Python.
 
+![Fraud rules engine visual overview](README_visual.png)
+
 ## Business Problem
 
 A BNPL company needs a transparent first-line fraud engine before sending risky orders to an ML model, manual review queue, or hard rejection policy. The engine evaluates incoming transactions and returns risk flags, reason codes, rule-level explanations, score contributions, a total risk score, and a final decision: `accept`, `review`, or `reject`.
@@ -31,7 +33,7 @@ flowchart LR
 ## Setup
 
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 make install
 ```
@@ -67,7 +69,7 @@ make run 34
 Or call the CLI directly:
 
 ```bash
-python -m fraud_rules_engine.cli --config config/rules.yaml --input data/sample_transactions.csv --limit 5
+python3 -m fraud_rules_engine.cli --config config/rules.yaml --input data/sample_transactions.csv --limit 5
 ```
 
 The CLI also writes:
@@ -80,6 +82,33 @@ The CLI also writes:
 ```bash
 make test
 make lint
+make pre-commit
+```
+
+The project uses Ruff for linting and formatting, pytest for tests, and pre-commit for
+automatic quality checks before commits. The pre-commit setup runs:
+
+- common file hygiene checks, including YAML validation, merge-conflict detection,
+  trailing-whitespace cleanup, and final-newline fixes.
+- `ruff --fix` for lint fixes.
+- `ruff-format` for Python formatting.
+
+Install the Git hook once after setup:
+
+```bash
+PRE_COMMIT_HOME=.cache/pre-commit .venv/bin/python -m pre_commit install
+```
+
+After that, each `git commit` runs the checks automatically. The Makefile keeps the
+pre-commit cache inside `.cache/pre-commit`, which is ignored by Git.
+
+To run the full check suite manually:
+
+```bash
+make test
+make lint
+.venv/bin/python -m ruff format --check .
+make pre-commit
 ```
 
 ## Run With Docker
@@ -232,6 +261,7 @@ This is intentionally simple, but it mirrors the kind of operational summary a R
 - How to think about the path from notebook code to reusable package code.
 - How policy versioning, audit records, and batch monitoring make a risk system easier to govern.
 - How Docker packages the project into a repeatable runtime environment.
+- How pre-commit, Ruff, and pytest protect the project before code reaches GitHub.
 
 ## Personal Learning TODOs
 

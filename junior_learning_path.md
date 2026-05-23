@@ -31,6 +31,7 @@ By the end, you should understand:
 - How one transaction becomes a fraud decision.
 - How rules are configured, executed, tested, audited, and monitored.
 - How Docker runs the project in a repeatable container environment.
+- How pre-commit, Ruff, and pytest protect changes before they are pushed to GitHub.
 - Where you can safely make your first changes.
 
 ## Mental Model First
@@ -57,6 +58,8 @@ Before reading files, run the project.
 ```bash
 make install
 make test
+make lint
+make pre-commit
 make generate-data
 make run
 ```
@@ -75,6 +78,7 @@ inside a container instead of directly on your machine.
 What to observe:
 
 - The tests should pass.
+- Ruff and pre-commit should pass.
 - The CLI should print transaction decisions.
 - The project should create files under `reports/`.
 - The Docker run should produce the same kind of decisions as the local run.
@@ -96,6 +100,7 @@ Understand:
 
 - The business problem.
 - Why a BNPL company might use fraud rules.
+- What the visual overview image is trying to summarize.
 - What the architecture diagram says.
 - How to run the project.
 
@@ -522,7 +527,7 @@ Mini task:
 - Run `make clean`.
 - Confirm those generated files were removed.
 
-## Step 17: Understand Supporting Files
+## Step 17: Understand Supporting Files And Tooling
 
 Open:
 
@@ -531,6 +536,9 @@ pyproject.toml
 Makefile
 Dockerfile
 .gitignore
+.pre-commit-config.yaml
+requirements.txt
+README_visual.png
 ```
 
 Understand:
@@ -539,10 +547,18 @@ Understand:
 - `Makefile` gives common project commands.
 - `Dockerfile` runs the project in a container.
 - `.gitignore` avoids committing generated or local files.
+- `.pre-commit-config.yaml` defines checks that run before commits.
+- `requirements.txt` lists runtime and development dependencies for simple installation.
+- `README_visual.png` is the visual overview shown in the README.
 
 Focus especially on these Makefile targets:
 
 ```text
+install
+test
+lint
+format
+pre-commit
 docker-build
 docker-run
 ```
@@ -555,6 +571,9 @@ Plain-English meaning:
 - The Docker run mounts local `data/` into `/app/data` as read-only.
 - The Docker run mounts local `reports/` into `/app/reports` so outputs remain visible
   after the container exits.
+- `make pre-commit` runs all configured pre-commit hooks over all files.
+- `make lint` runs Ruff lint checks.
+- `make format` applies Ruff formatting and safe lint fixes.
 
 Why this matters:
 
@@ -562,6 +581,10 @@ Why this matters:
 - A teammate can run the engine without manually creating a virtual environment.
 - The container separates the application runtime from your laptop setup.
 - Mounting `reports/` keeps generated audit and monitoring files outside the container.
+- Pre-commit catches formatting, linting, YAML, merge-conflict, whitespace, and file-size
+  issues before they are committed.
+- The large-file hook allows the README visual image but still blocks files larger than
+  3 MB by default.
 
 Common Docker workflow:
 
@@ -570,6 +593,22 @@ make generate-data
 make docker-build
 make docker-run 10
 ```
+
+Common local quality workflow:
+
+```bash
+make test
+make lint
+make pre-commit
+```
+
+Install the Git hook once:
+
+```bash
+PRE_COMMIT_HOME=.cache/pre-commit .venv/bin/python -m pre_commit install
+```
+
+After this, `git commit` automatically runs the hooks.
 
 When to rebuild:
 
@@ -587,6 +626,8 @@ Mini task:
 Mini task:
 
 - Find the command behind `make test`.
+- Find the command behind `make lint`.
+- Find the command behind `make pre-commit`.
 - Find the command behind `make run`.
 - Find the command behind `make clean`.
 - Find the command behind `make docker-run`.
@@ -638,6 +679,8 @@ You are ready to move on when you can answer these:
 - What does the batch monitoring report tell us?
 - What does Docker add to this project?
 - Why does `make docker-run` mount `data/` and `reports/`?
+- What does pre-commit check before a commit?
+- Why is `README_visual.png` allowed even though large files are usually risky?
 - Where would you add a new rule?
 - Where would you add a new test?
 - How would this later become an API?
