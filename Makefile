@@ -1,4 +1,7 @@
-.PHONY: install test lint format generate-data run clean clean-all docker-build docker-run
+.PHONY: install test lint format pre-commit generate-data run clean clean-all docker-build docker-run
+
+PYTHON ?= python3
+PRE_COMMIT_HOME ?= .cache/pre-commit
 
 ARG ?= $(word 2,$(MAKECMDGOALS))
 
@@ -21,23 +24,26 @@ endif
 endif
 
 install:
-	python -m pip install -e ".[dev]"
+	$(PYTHON) -m pip install -e ".[dev]"
 
 test:
-	pytest
+	$(PYTHON) -m pytest
 
 lint:
-	ruff check .
+	$(PYTHON) -m ruff check .
 
 format:
-	ruff format .
-	ruff check --fix .
+	$(PYTHON) -m ruff format .
+	$(PYTHON) -m ruff check --fix .
+
+pre-commit:
+	PRE_COMMIT_HOME=$(PRE_COMMIT_HOME) $(PYTHON) -m pre_commit run --all-files
 
 generate-data:
-	python -m fraud_rules_engine.data_generation --output data/sample_transactions.csv --rows $(ROWS)
+	$(PYTHON) -m fraud_rules_engine.data_generation --output data/sample_transactions.csv --rows $(ROWS)
 
 run:
-	python -m fraud_rules_engine.cli --config config/rules.yaml --input data/sample_transactions.csv --limit $(LIMIT)
+	$(PYTHON) -m fraud_rules_engine.cli --config config/rules.yaml --input data/sample_transactions.csv --limit $(LIMIT)
 
 clean:
 	rm -f data/sample_transactions.csv

@@ -52,4 +52,3 @@ def write_batch_monitoring_report(report: BatchMonitoringReport, output_path: Pa
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8") as file:
         json.dump(report.model_dump(mode="json"), file, indent=2)
-

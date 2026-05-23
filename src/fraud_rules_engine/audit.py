@@ -37,4 +37,3 @@ def write_audit_log(
     with output_path.open("w", encoding="utf-8") as file:
         for transaction, result in zip(transactions, results, strict=True):
             file.write(json.dumps(build_audit_record(transaction, result)) + "\n")
-

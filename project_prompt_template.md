@@ -230,4 +230,3 @@ After generating the project, also provide:
 6. Suggestions for how this project connects to real companies such as fintechs, marketplaces, mobility companies, e-commerce companies, or scale-ups.
 7. A short explanation of why the project is Senior-level or Staff-level.
 ```
-

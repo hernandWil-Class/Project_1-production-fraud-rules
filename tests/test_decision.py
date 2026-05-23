@@ -10,4 +10,3 @@ def test_decision_accept_review_reject_boundaries() -> None:
     assert decide(40, thresholds) == Decision.REVIEW
     assert decide(79, thresholds) == Decision.REVIEW
     assert decide(80, thresholds) == Decision.REJECT
-

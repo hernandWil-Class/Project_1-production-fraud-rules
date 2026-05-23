@@ -8,4 +8,3 @@ def decide(total_risk_score: int, thresholds: DecisionThresholds) -> Decision:
     if total_risk_score >= thresholds.review_threshold:
         return Decision.REVIEW
     return Decision.ACCEPT
-
